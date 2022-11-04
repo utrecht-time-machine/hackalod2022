@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Canvas, ThreeElements, useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 // import domPieceColor from "../../../public/img/dom-piece.jpg";
@@ -14,7 +14,7 @@ function randomIntFromInterval(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const getDomTexture = (level: number): string => {
+const getSingleDomTexture = (level: number): string => {
   let maxImages;
   switch (level) {
     case 0:
@@ -33,28 +33,40 @@ const getDomTexture = (level: number): string => {
       throw Error("Level not valid");
   }
 
-  return `/img/level${level}/${randomIntFromInterval(0, maxImages)}`;
+  const imgUrl = `/img/level${level}/${randomIntFromInterval(
+    1,
+    maxImages
+  )}.png`;
+  return imgUrl;
 };
 
-function Box(props: ThreeElements["mesh"]) {
+const generateNewDomTextureCube = (level: number) => {
+  const textureCube = [
+    getSingleDomTexture(level),
+    getSingleDomTexture(level),
+    getSingleDomTexture(level),
+    getSingleDomTexture(level),
+    getSingleDomTexture(level),
+    getSingleDomTexture(level),
+  ];
+  console.log(textureCube);
+  return textureCube;
+};
+
+const initialCube = {
+  0: generateNewDomTextureCube(0),
+  1: generateNewDomTextureCube(1),
+  2: generateNewDomTextureCube(2),
+};
+
+function DomBox(props: { three: ThreeElements["mesh"]; textureCube: any }) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
-  // const [clicked, click] = useState(false);
-
-  let level = 0;
-  const cubeArray = useLoader(TextureLoader, [
-    getDomTexture(level),
-    getDomTexture(level),
-    getDomTexture(level),
-    getDomTexture(level),
-    getDomTexture(level),
-    getDomTexture(level),
-  ]);
 
   useFrame((state, delta) => (ref.current.rotation.y -= 0.01));
   return (
     <mesh
-      {...props}
+      {...props.three}
       ref={ref}
       // scale={clicked ? 1.5 : 1}
       // onClick={(event) => click(!clicked)}
@@ -63,12 +75,12 @@ function Box(props: ThreeElements["mesh"]) {
     >
       <boxGeometry attach="geometry" args={[1, 1, 1]} />
       {/*<meshStandardMaterial color={hovered ? "hotpink" : "orange"} />*/}
-      <meshStandardMaterial attach="material-0" map={cubeArray[0]} />
-      <meshStandardMaterial attach="material-1" map={cubeArray[1]} />
-      <meshStandardMaterial attach="material-2" map={cubeArray[2]} />
-      <meshStandardMaterial attach="material-3" map={cubeArray[3]} />
-      <meshStandardMaterial attach="material-4" map={cubeArray[4]} />
-      <meshStandardMaterial attach="material-5" map={cubeArray[5]} />
+      <meshStandardMaterial attach="material-0" map={props.textureCube[0]} />
+      <meshStandardMaterial attach="material-1" map={props.textureCube[1]} />
+      <meshStandardMaterial attach="material-2" map={props.textureCube[2]} />
+      <meshStandardMaterial attach="material-3" map={props.textureCube[3]} />
+      <meshStandardMaterial attach="material-4" map={props.textureCube[4]} />
+      <meshStandardMaterial attach="material-5" map={props.textureCube[5]} />
     </mesh>
   );
 }
@@ -76,25 +88,40 @@ function Box(props: ThreeElements["mesh"]) {
 const DomRenderer = (props: {}) => {
   const boxHeightRatio = 1.5;
   const baseHeight = -2;
+
+  const cubeArray0 = useLoader(TextureLoader, initialCube[0]);
+  const cubeArray1 = useLoader(TextureLoader, initialCube[1]);
+  const cubeArray2 = useLoader(TextureLoader, initialCube[2]);
+  const domTexture = [cubeArray0, cubeArray1, cubeArray2];
+
   return (
     <Canvas style={{ height: "800px" }}>
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <Box
-        position={[0, baseHeight + 0, 0]}
-        scale={[1.2, 1.2 * boxHeightRatio, 1.2]}
+      <DomBox
+        three={{
+          position: [0, baseHeight + 0, 0],
+          scale: [1.2, 1.2 * boxHeightRatio, 1.2],
+        }}
+        textureCube={domTexture[0]}
       />
-      <Box
-        position={[0, baseHeight + 1.15 * boxHeightRatio, 0]}
-        scale={[1.1, 1.1 * boxHeightRatio, 1.1]}
+      <DomBox
+        three={{
+          position: [0, baseHeight + 1.15 * boxHeightRatio, 0],
+          scale: [1.1, 1.1 * boxHeightRatio, 1.1],
+        }}
+        textureCube={domTexture[1]}
       />
-      <Box
-        position={[
-          0,
-          baseHeight + 1.15 * boxHeightRatio + 1.05 * boxHeightRatio,
-          0,
-        ]}
-        scale={[1, 1 * boxHeightRatio, 1]}
+      <DomBox
+        three={{
+          position: [
+            0,
+            baseHeight + 1.15 * boxHeightRatio + 1.05 * boxHeightRatio,
+            0,
+          ],
+          scale: [1, 1 * boxHeightRatio, 1],
+        }}
+        textureCube={domTexture[2]}
       />
     </Canvas>
   );
