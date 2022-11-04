@@ -3,6 +3,7 @@ import "./App.css";
 import Layout from "./components/layout/layout";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import DomRenderer from "./components/dom-renderer/dom-renderer";
+import { StateModel } from "./models/state-model";
 
 const router = createBrowserRouter([
   {
@@ -15,11 +16,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+export const state: StateModel = {
+  institutions: [],
+  materials: [],
+  yearRange: [],
+  techniques: [],
+};
+export const StateContext = React.createContext(state);
+
 function App() {
   return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
+    <StateContext.Provider value={state}>
+      <React.StrictMode>
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    </StateContext.Provider>
   );
 }
 

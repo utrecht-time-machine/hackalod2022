@@ -9,6 +9,7 @@ const Layout = (props: {}) => {
       </div>
       <div className={"col-span-2 bg-slate-600 p-4"}>
         <p>Column</p>
+        <img src="https://placekitten.com/400/300" alt="Placeholder" />
       </div>
     </div>
   );
