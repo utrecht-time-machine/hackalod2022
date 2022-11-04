@@ -1,11 +1,25 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Layout from "./components/layout/layout";
+import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import DomRenderer from "./components/dom-renderer/dom-renderer";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+  },
+  {
+    path: "/dom",
+    element: <DomRenderer />,
+  },
+]);
 
 function App() {
   return (
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   );
 }
 
