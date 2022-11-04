@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Layout from "./components/layout/layout";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import DomRenderer from "./components/dom-renderer/dom-renderer";
-import { StateModel } from "./models/state-model";
+import { createStore, StateMachineProvider } from "little-state-machine";
+import { StateModel } from "./models/state.model";
 
 const router = createBrowserRouter([
   {
@@ -16,21 +17,31 @@ const router = createBrowserRouter([
   },
 ]);
 
-export const state: StateModel = {
+const state: StateModel = {
   institutions: [],
   materials: [],
   yearRange: [],
   techniques: [],
 };
-export const StateContext = React.createContext(state);
+
+createStore({
+  materials: [],
+  institutions: [],
+  techniques: [],
+  yearRange: [],
+});
 
 function App() {
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
+
   return (
-    <StateContext.Provider value={state}>
+    <StateMachineProvider>
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>
-    </StateContext.Provider>
+    </StateMachineProvider>
   );
 }
 

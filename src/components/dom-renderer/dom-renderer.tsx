@@ -1,16 +1,56 @@
 import React, { useRef, useState } from "react";
 import { Canvas, ThreeElements, useFrame, useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three/src/loaders/TextureLoader";
+import { TextureLoader } from "three";
 // import domPieceColor from "../../../public/img/dom-piece.jpg";
 
 // All textures are CC0 textures from: https://cc0textures.com/
 const domPieceColor = () => `/img/dom-piece.jpg`;
+const dom2 =
+  "https://images.unsplash.com/photo-1606820811250-10f94663a029?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZG9tJTIwdG93ZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=1000&q=60";
+
+// Source: https://stackoverflow.com/a/7228322
+function randomIntFromInterval(min: number, max: number) {
+  // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const getDomTexture = (level: number): string => {
+  let maxImages;
+  switch (level) {
+    case 0:
+      maxImages = 36;
+      break;
+    case 1:
+      maxImages = 47;
+      break;
+    case 2:
+      maxImages = 56;
+      break;
+    case 3:
+      maxImages = 46;
+      break;
+    default:
+      throw Error("Level not valid");
+  }
+
+  return `/img/level${level}/${randomIntFromInterval(0, maxImages)}`;
+};
 
 function Box(props: ThreeElements["mesh"]) {
   const ref = useRef<THREE.Mesh>(null!);
   const [hovered, hover] = useState(false);
   // const [clicked, click] = useState(false);
-  const [colorMap] = useLoader(TextureLoader, [domPieceColor()]);
+
+  let level = 0;
+  const cubeArray = useLoader(TextureLoader, [
+    getDomTexture(level),
+    getDomTexture(level),
+    getDomTexture(level),
+    getDomTexture(level),
+    getDomTexture(level),
+    getDomTexture(level),
+  ]);
+
   useFrame((state, delta) => (ref.current.rotation.y -= 0.01));
   return (
     <mesh
@@ -21,9 +61,14 @@ function Box(props: ThreeElements["mesh"]) {
       onPointerOver={(event) => hover(true)}
       onPointerOut={(event) => hover(false)}
     >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
-      <meshStandardMaterial displacementScale={0.2} map={colorMap} />
+      <boxGeometry attach="geometry" args={[1, 1, 1]} />
+      {/*<meshStandardMaterial color={hovered ? "hotpink" : "orange"} />*/}
+      <meshStandardMaterial attach="material-0" map={cubeArray[0]} />
+      <meshStandardMaterial attach="material-1" map={cubeArray[1]} />
+      <meshStandardMaterial attach="material-2" map={cubeArray[2]} />
+      <meshStandardMaterial attach="material-3" map={cubeArray[3]} />
+      <meshStandardMaterial attach="material-4" map={cubeArray[4]} />
+      <meshStandardMaterial attach="material-5" map={cubeArray[5]} />
     </mesh>
   );
 }

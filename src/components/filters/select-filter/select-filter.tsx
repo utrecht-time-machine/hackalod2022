@@ -1,47 +1,62 @@
-import React from "react";
+// @ts-nocheck
+
+import React, { useEffect } from "react";
 import Select, { ActionMeta } from "react-select";
 import makeAnimated from "react-select/animated";
-import { StateContext } from "../../../App";
-import { OptionModel } from "../../../models/option-model";
-import { StateModel } from "../../../models/state-model";
+import { useStateMachine } from "little-state-machine";
+import {
+  updateInstitutions,
+  updateMaterials,
+  updateTechniques,
+} from "../../../actions/actions";
+import { OptionModel } from "../../../models/option.model";
+import { FilterKey } from "../../../models/filter-key";
 
 const animatedComponents = makeAnimated();
 
 const SelectFilter = (props: {
   options: readonly OptionModel[];
-  selectKey: string;
+  filterKey: FilterKey;
 }) => {
-  const onMaterialChange = (
+  const onChange = (
     options: readonly OptionModel[],
-    actionMeta: ActionMeta<OptionModel>,
-    state: StateModel
+    actionMeta: ActionMeta<OptionModel>
   ) => {
-    if (!(props.selectKey in state)) {
-      console.warn("Could not find key", props.selectKey, "in state", state);
-      return;
+    if (props.filterKey === FilterKey.institutions) {
+      // @ts-ignore
+      actions.updateInstitutions(options);
+    } else if (props.filterKey === FilterKey.materials) {
+      // @ts-ignore
+      actions.updateMaterials(options);
+    } else if (props.filterKey === FilterKey.techniques) {
+      // @ts-ignore
+      actions.updateTechniques(options);
     }
-
-    // @ts-ignore
-    state[props.selectKey] = options;
   };
 
+  const { state, actions } = useStateMachine({
+    updateInstitutions,
+    updateMaterials,
+    updateTechniques,
+  });
+
+  useEffect(() => {
+    console.log("STATE", state);
+  }, [state]);
+
   return (
-    <StateContext.Consumer>
-      {(state) => (
-        <Select
-          closeMenuOnSelect={false}
-          components={animatedComponents}
-          isMulti
-          options={props.options}
-          onChange={(
-            option: readonly OptionModel[],
-            actionMeta: ActionMeta<OptionModel>
-          ) => {
-            onMaterialChange(option, actionMeta, state);
-          }}
-        />
-      )}
-    </StateContext.Consumer>
+    <Select
+      closeMenuOnSelect={false}
+      components={animatedComponents}
+      isMulti
+      options={props.options}
+      onChange={(
+        option: readonly OptionModel[],
+        actionMeta: ActionMeta<OptionModel>
+      ) => {
+        onChange(option, actionMeta);
+      }}
+    />
   );
 };
 

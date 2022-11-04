@@ -1,4 +1,4 @@
-import { OptionModel } from "../models/option-model";
+import { OptionModel } from "../models/option.model";
 
 export const materialOptions: readonly OptionModel[] = [
   { value: "painting", label: "Painting" },
