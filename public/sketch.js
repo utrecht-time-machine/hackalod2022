@@ -51,73 +51,96 @@ function onImageFilterUpdated(detail) {
   // levelCounts = [0, 0, 0, 0];
 
   for (let side = 0; side < 9; side++) {
-    //always 9 images
-    let img = detail[side];
-    if (!img) {
-      console.warn("No img passed...");
-      return;
-    }
-    if (!imageDataById[img.id]) {
-      console.log("loading ", img.id, "into imageDataById[", img.id, "]");
-      imageDataById[img.id] = loadImage(
-        "/img/torenafbeeldingen/" + img.id + ".jpg",
-        () => {
-          setTimeout(() => {
-            if (!(img.id in croppedImageDataById)) {
-              croppedImageDataById[img.id] = [null, null, null, null];
-            }
-            if (img.layer0Coordinates) {
-              croppedImageDataById[img.id][0] = imageDataById[img.id].get(
-                img.layer0Coordinates.x,
-                img.layer0Coordinates.y,
-                img.layer0Coordinates.width,
-                img.layer0Coordinates.height
-              );
-            }
-            if (img.layer1Coordinates) {
-              croppedImageDataById[img.id][1] = imageDataById[img.id].get(
-                img.layer1Coordinates.x,
-                img.layer1Coordinates.y,
-                img.layer1Coordinates.width,
-                img.layer1Coordinates.height
-              );
-            }
-            if (img.layer2Coordinates) {
-              croppedImageDataById[img.id][2] = imageDataById[img.id].get(
-                img.layer2Coordinates.x,
-                img.layer2Coordinates.y,
-                img.layer2Coordinates.width,
-                img.layer2Coordinates.height
-              );
-            }
-            if (img.layer3Coordinates) {
-              croppedImageDataById[img.id][3] = imageDataById[img.id].get(
-                img.layer3Coordinates.x,
-                img.layer3Coordinates.y,
-                img.layer3Coordinates.width,
-                img.layer3Coordinates.height
-              );
-            }
-          });
-          // imageDataById[img.id].get(
-          //   img.x,
-          //   img.y,
-          //   img.width,
-          //   img.height
-          // );
-        }
-      );
-    } else {
-      // console.log("from cache ", img.id);
-    }
-
     // console.log(img.)
     // layer0Coordinates: { x: number; y: number; width: number; height: number };
     for (let level = 0; level < 4; level++) {
-      const levelCoords = img["layer" + level + "Coordinates"];
+      let randomImg = detail[Math.floor(Math.random() * detail.length)]; //detail[side];
+      if (!randomImg) {
+        console.warn("No img passed...", detail);
+        return;
+      }
+      if (!imageDataById[randomImg.id]) {
+        console.log(
+          "loading ",
+          randomImg.id,
+          "into imageDataById[",
+          randomImg.id,
+          "]"
+        );
+        imageDataById[randomImg.id] = loadImage(
+          "/img/torenafbeeldingen/" + randomImg.id + ".jpg",
+          () => {
+            setTimeout(() => {
+              if (!(randomImg.id in croppedImageDataById)) {
+                croppedImageDataById[randomImg.id] = [null, null, null, null];
+              }
+
+              // TODO: If this image does not have a bounding box for this layer, then use another image? Or use another layer (as a hack)..
+              for (const k of [
+                "layer0Coordinates",
+                "layer1Coordinates",
+                "layer2Coordinates",
+                "layer3Coordinates",
+              ]) {
+              }
+
+              if (randomImg.layer0Coordinates) {
+                croppedImageDataById[randomImg.id][0] = imageDataById[
+                  randomImg.id
+                ].get(
+                  randomImg.layer0Coordinates.x,
+                  randomImg.layer0Coordinates.y,
+                  randomImg.layer0Coordinates.width,
+                  randomImg.layer0Coordinates.height
+                );
+              }
+              if (randomImg.layer1Coordinates) {
+                croppedImageDataById[randomImg.id][1] = imageDataById[
+                  randomImg.id
+                ].get(
+                  randomImg.layer1Coordinates.x,
+                  randomImg.layer1Coordinates.y,
+                  randomImg.layer1Coordinates.width,
+                  randomImg.layer1Coordinates.height
+                );
+              }
+              if (randomImg.layer2Coordinates) {
+                croppedImageDataById[randomImg.id][2] = imageDataById[
+                  randomImg.id
+                ].get(
+                  randomImg.layer2Coordinates.x,
+                  randomImg.layer2Coordinates.y,
+                  randomImg.layer2Coordinates.width,
+                  randomImg.layer2Coordinates.height
+                );
+              }
+              if (randomImg.layer3Coordinates) {
+                croppedImageDataById[randomImg.id][3] = imageDataById[
+                  randomImg.id
+                ].get(
+                  randomImg.layer3Coordinates.x,
+                  randomImg.layer3Coordinates.y,
+                  randomImg.layer3Coordinates.width,
+                  randomImg.layer3Coordinates.height
+                );
+              }
+            });
+            // imageDataById[img.id].get(
+            //   img.x,
+            //   img.y,
+            //   img.width,
+            //   img.height
+            // );
+          }
+        );
+      } else {
+        // console.log("from cache ", img.id);
+      }
+
+      const levelCoords = randomImg["layer" + level + "Coordinates"];
 
       setTimeout(() => {
-        if (croppedImageDataById[img.id]) {
+        if (croppedImageDataById[randomImg.id]) {
           t[level][side] = undefined;
           if (!(level in tIds)) {
             tIds[level] = {};
@@ -125,11 +148,11 @@ function onImageFilterUpdated(detail) {
           tIds[level][side] = undefined;
 
           if (
-            level in croppedImageDataById[img.id] &&
-            croppedImageDataById[img.id][level]
+            level in croppedImageDataById[randomImg.id] &&
+            croppedImageDataById[randomImg.id][level]
           ) {
-            t[level][side] = croppedImageDataById[img.id][level];
-            tIds[level][side] = img.id;
+            t[level][side] = croppedImageDataById[randomImg.id][level];
+            tIds[level][side] = randomImg.id;
           }
         }
       }, 2);
@@ -244,7 +267,8 @@ function drawTriangle(target, level, side, a, b, c, ta, tb, tc) {
     if (t && level in t && side in t[level] && t[level][side]) {
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      // TODO: Use default texture? At level 5? (as a hack)
+      target.fill(200, 200, 200);
     }
     target.vertex(a[0], a[1], a[2], ta[0], ta[1]);
     target.vertex(b[0], b[1], b[2], tb[0], tb[1]);
@@ -269,7 +293,7 @@ function drawQuad(target, level, side, a, b, c, d, ta, tb, tc, td) {
       // console.log("OI", t, level, side);
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      target.fill(200, 200, 200);
     }
     target.vertex(a[0], a[1], a[2], ta[0], ta[1]);
     target.vertex(b[0], b[1], b[2], tb[0], tb[1]);
@@ -401,7 +425,7 @@ function drawTexturedPyramid(level) {
     if (textureIsAvailable) {
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      target.fill(200, 200, 200);
     }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
@@ -412,7 +436,7 @@ function drawTexturedPyramid(level) {
     if (textureIsAvailable) {
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      target.fill(200, 200, 200);
     }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
@@ -423,7 +447,7 @@ function drawTexturedPyramid(level) {
     if (textureIsAvailable) {
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      target.fill(200, 200, 200);
     }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
@@ -434,7 +458,7 @@ function drawTexturedPyramid(level) {
     if (textureIsAvailable) {
       target.texture(t[level][side]);
     } else {
-      target.fill(0, 0, 0);
+      target.fill(200, 200, 200);
     }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);

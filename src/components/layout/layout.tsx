@@ -7,11 +7,22 @@ import ImagePreview from "../data-viewer/image-preview";
 import DomRendererP5 from "../dom-renderer/dom-renderer-p5";
 import { updateSelectedImage } from "../../actions/actions";
 import { ImageModel } from "../../models/image.model";
+import { OptionModel } from "../../models/option.model";
+import { StateModel } from "../../models/state.model";
 
 const Layout = (props: {}) => {
   // @ts-ignore
   const { state, actions } = useStateMachine({ updateSelectedImage });
 
+  // @ts-ignore
+  const stateAsModel: StateModel = state as StateModel;
+  const stateDeps = [
+    stateAsModel.yearRange,
+    stateAsModel.makers,
+    stateAsModel.materials,
+    stateAsModel.institutions,
+    stateAsModel.techniques,
+  ];
   useEffect(() => {
     // console.log(getData());
 
@@ -21,7 +32,6 @@ const Layout = (props: {}) => {
     );
 
     const images: ImageModel[] = DataService.getImages();
-    const nineImages = Array(9).fill(images);
     const nineFilteredImages =
       FilterService.getNineFilteredImages(filteredImages);
     console.log("FILTER STATE", state, nineFilteredImages);
@@ -35,13 +45,16 @@ const Layout = (props: {}) => {
 
     window.addEventListener("onFaceClicked", (event: any) => {
       const imgId = event.detail;
+      if (!imgId) {
+        return;
+      }
       console.log("CLICKED", imgId);
       const selectedImage = DataService.getImageById(imgId);
       if (selectedImage) {
         actions.updateSelectedImage(selectedImage);
       }
     });
-  }, [state]);
+  }, stateDeps);
 
   useEffect(() => {
     console.log("Resetting LocalStorage...");

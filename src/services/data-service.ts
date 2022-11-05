@@ -13,13 +13,14 @@ export class DataService {
   ): OptionModel[] => {
     const optionIds: string[] = Array.from(
       new Set(
-        images.map((img) => {
-          // @ts-ignore
-          return img[key];
-        })
+        images
+          .map((img) => {
+            // @ts-ignore
+            return img[key];
+          })
+          .flat()
       )
-    ).flat();
-
+    );
     return optionIds.map((id) => {
       return { label: id, value: id };
     });

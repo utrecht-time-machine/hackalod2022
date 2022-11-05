@@ -16,11 +16,11 @@ const ImagePreview = (props: { image: ImageModel }) => {
           {props.image?.dateBegin} - {props.image?.dateEnd}
         </div>
         <div className={"grid grid-cols-2"}>
-          <strong className={"font-bold  mr-4"}>Institutions </strong>{" "}
+          <strong className={"font-bold  mr-4"}>Institution </strong>{" "}
           {props.image?.institutions}
         </div>
         <div className={"grid grid-cols-2"}>
-          <strong>Materials </strong> {props.image?.materials}
+          <strong>Object type </strong> {props.image?.materials}
         </div>
         <div className={"grid grid-cols-2"}>
           <strong>Makers</strong> {props.image?.makers}

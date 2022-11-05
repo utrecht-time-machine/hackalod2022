@@ -15,3 +15,7 @@ code {
 canvas {
   margin: auto;
 }
+
+@media (orientation: portrait) {
+
+}

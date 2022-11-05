@@ -15,6 +15,10 @@ export class FilterService {
       return false;
     }
 
+    if (!image.dateBegin && !image.dateEnd) {
+      return true;
+    }
+
     if (image.dateBegin && image.dateEnd) {
       return image.dateBegin >= yearRange[0] && image.dateEnd <= yearRange[1];
     }

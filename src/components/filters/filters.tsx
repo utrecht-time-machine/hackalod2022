@@ -73,7 +73,7 @@ const Filters = (props: {}) => {
         />
       </div>
 
-      <p className={styles.filterTitle}>Material</p>
+      <p className={styles.filterTitle}>Object type</p>
       <SelectFilter options={materialOptions} filterKey={FilterKey.materials} />
 
       <p className={styles.filterTitle}>Makers</p>

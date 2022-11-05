@@ -45,8 +45,6 @@ const SelectFilter = (props: {
     updateMakers,
   });
 
-  useEffect(() => {}, [state]);
-
   return (
     <Select
       closeMenuOnSelect={false}
