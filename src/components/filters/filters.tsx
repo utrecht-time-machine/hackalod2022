@@ -2,19 +2,11 @@ import { Slider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styles from "./filters.module.scss";
 import SelectFilter from "./select-filter/select-filter";
-import {
-  institutionOptions,
-  materialOptions,
-  techniqueOptions,
-} from "../../data/data";
 import { FilterKey } from "../../models/filter-key";
 import { useStateMachine } from "little-state-machine";
-import {
-  updateInstitutions,
-  updateMaterials,
-  updateTechniques,
-  updateYearRange,
-} from "../../actions/actions";
+import { updateYearRange } from "../../actions/actions";
+import { DataService } from "../../services/data-service";
+import { OptionModel } from "../../models/option.model";
 
 const Filters = (props: {}) => {
   // @ts-ignore
@@ -26,9 +18,22 @@ const Filters = (props: {}) => {
     actions.updateYearRange(newValue as number[]);
   };
 
-  // useEffect(() => {
-  //   console.log(state);
-  // }, [state]);
+  const [materialOptions, setMaterialOptions] = useState<OptionModel[]>([]);
+  const [institutionOptions, setInstitutionOptions] = useState<OptionModel[]>(
+    []
+  );
+  const [techniqueOptions, setTechniqueOptions] = useState<OptionModel[]>([]);
+  useEffect(() => {
+    setMaterialOptions(
+      DataService.getImageOptions(DataService.getImages(), "materials")
+    );
+    setTechniqueOptions(
+      DataService.getImageOptions(DataService.getImages(), "techniques")
+    );
+    setInstitutionOptions(
+      DataService.getImageOptions(DataService.getImages(), "institutions")
+    );
+  }, []);
 
   return (
     <>

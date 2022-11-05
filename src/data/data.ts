@@ -12,6 +12,6 @@ export const techniqueOptions: readonly OptionModel[] = [
 ];
 
 export const institutionOptions: readonly OptionModel[] = [
-  { value: "utrecht-archives", label: "The Utrecht Archives" },
-  { value: "boijmans", label: "Boijmans" },
+  { value: "Het Utrechts Archief", label: "The Utrecht Archives" },
+  { value: "Boijmans", label: "Boijmans" },
 ];
