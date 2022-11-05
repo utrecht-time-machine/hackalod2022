@@ -1,5 +1,5 @@
 import { Slider } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./filters.module.scss";
 import SelectFilter from "./select-filter/select-filter";
 import {
@@ -25,6 +25,10 @@ const Filters = (props: {}) => {
     setYearRange(newValue as number[]);
     actions.updateYearRange(newValue as number[]);
   };
+
+  // useEffect(() => {
+  //   console.log(state);
+  // }, [state]);
 
   return (
     <>

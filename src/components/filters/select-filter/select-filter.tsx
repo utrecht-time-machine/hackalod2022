@@ -40,9 +40,7 @@ const SelectFilter = (props: {
     updateTechniques,
   });
 
-  useEffect(() => {
-    console.log("STATE", state);
-  }, [state]);
+  useEffect(() => {}, [state]);
 
   return (
     <Select

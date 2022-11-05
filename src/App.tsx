@@ -2,9 +2,16 @@ import React, { useEffect } from "react";
 import "./App.css";
 import Layout from "./components/layout/layout";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
-import DomRenderer from "./components/dom-renderer/dom-renderer";
-import { createStore, StateMachineProvider } from "little-state-machine";
+import DomRenderer, { DomTower } from "./components/dom-renderer/dom-renderer";
+import {
+  createStore,
+  StateMachineProvider,
+  useStateMachine,
+} from "little-state-machine";
 import { StateModel } from "./models/state.model";
+import { testSet } from "./data/testSet";
+import { FilterService } from "./services/filter-service";
+import { updateYearRange } from "./actions/actions";
 
 const router = createBrowserRouter([
   {
@@ -17,13 +24,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-const state: StateModel = {
-  institutions: [],
-  materials: [],
-  yearRange: [],
-  techniques: [],
-};
-
 createStore({
   materials: [],
   institutions: [],
@@ -32,10 +32,6 @@ createStore({
 });
 
 function App() {
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
   return (
     <StateMachineProvider>
       <React.StrictMode>

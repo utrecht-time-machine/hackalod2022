@@ -1,17 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas, ThreeElements, useFrame, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
-// import domPieceColor from "../../../public/img/dom-piece.jpg";
-
-// All textures are CC0 textures from: https://cc0textures.com/
-const domPieceColor = () => `/img/dom-piece.jpg`;
-const dom2 =
-  "https://images.unsplash.com/photo-1606820811250-10f94663a029?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZG9tJTIwdG93ZXJ8ZW58MHx8MHx8&auto=format&fit=crop&w=1000&q=60";
+import { ImageModel } from "../../models/image.model";
 
 // Source: https://stackoverflow.com/a/7228322
 function randomIntFromInterval(min: number, max: number) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+export interface DomTower {
+  level0: ImageModel[]; // 4 images
+  level1: ImageModel[]; // 4 images
+  level2: ImageModel[]; // 4 images
 }
 
 const getSingleDomTexture = (level: number): string => {
@@ -49,7 +50,6 @@ const generateNewDomTextureCube = (level: number) => {
     getSingleDomTexture(level),
     getSingleDomTexture(level),
   ];
-  console.log(textureCube);
   return textureCube;
 };
 
