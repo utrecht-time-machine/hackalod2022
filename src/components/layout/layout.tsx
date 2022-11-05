@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Filters from "../filters/filters";
-import DataViewer from "../data-viewer/data-viewer";
 import { FilterService } from "../../services/filter-service";
 import { useStateMachine } from "little-state-machine";
 import { DataService } from "../../services/data-service";
@@ -26,18 +25,18 @@ const Layout = (props: {}) => {
       <div className={"col-span-4 bg-black p-4"}>
         <div
           className={
-            "scale-75 -bottom-8 absolute -left-8 bg-[rgba(255,255,255,0.5)] w-96 p-4 px-8 rounded"
+            "scale-75 -bottom-[2rem] absolute -left-8 w-96 p-4 px-8 rounded"
           }
         >
           <Filters />
         </div>
 
-        <DataViewer
-          images={FilterService.getFilteredImages(
-            DataService.getImages(),
-            state
-          )}
-        />
+        {/*<DataViewer*/}
+        {/*  images={FilterService.getFilteredImages(*/}
+        {/*    DataService.getImages(),*/}
+        {/*    state*/}
+        {/*  )}*/}
+        {/*/>*/}
 
         <DomRendererP5 />
       </div>

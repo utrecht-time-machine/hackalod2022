@@ -1,4 +1,4 @@
-import { Slider } from "@mui/material";
+import { createMuiTheme, Slider, ThemeProvider } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import styles from "./filters.module.scss";
 import SelectFilter from "./select-filter/select-filter";
@@ -7,6 +7,23 @@ import { useStateMachine } from "little-state-machine";
 import { updateYearRange } from "../../actions/actions";
 import { DataService } from "../../services/data-service";
 import { OptionModel } from "../../models/option.model";
+//
+// const themeOptions: any = {
+//   overrides: {
+//     MuiSlider: {
+//       thumb: {
+//         color: "yellow",
+//       },
+//       track: {
+//         color: "red",
+//       },
+//       rail: {
+//         color: "black",
+//       },
+//     },
+//   },
+// };
+// const muiTheme: any = createMuiTheme(themeOptions);
 
 const Filters = (props: {}) => {
   // @ts-ignore
@@ -40,38 +57,42 @@ const Filters = (props: {}) => {
   }, []);
 
   return (
-    <>
+    <div
+      className={"opacity-30 hover:opacity-90 duration-500 transition-opacity"}
+    >
+      <p className={`${styles.filterTitle}`}>Year range</p>
+      <div className={"px-2 saturate-0 brightness-[1.4]"}>
+        <Slider
+          value={yearRange}
+          onChange={(event: Event, newValue: number | number[]) => {
+            onYearRangeChange(event, newValue);
+          }}
+          min={1300}
+          max={2022}
+          valueLabelDisplay="auto"
+        />
+      </div>
+
       <p className={styles.filterTitle}>Material</p>
       <SelectFilter options={materialOptions} filterKey={FilterKey.materials} />
 
       <p className={styles.filterTitle}>Makers</p>
       <SelectFilter options={makerOptions} filterKey={FilterKey.makers} />
 
-      <p className={`${styles.filterTitle} mt-6`}>Year range</p>
-      <Slider
-        value={yearRange}
-        onChange={(event: Event, newValue: number | number[]) => {
-          onYearRangeChange(event, newValue);
-        }}
-        min={1300}
-        max={2022}
-        valueLabelDisplay="auto"
-      />
-
-      <p className={`${styles.filterTitle} mt-6`}>Technique</p>
+      <p className={`${styles.filterTitle}`}>Technique</p>
       <SelectFilter
         options={techniqueOptions}
         filterKey={FilterKey.techniques}
       />
 
-      <p className={`${styles.filterTitle} mt-6`}>Institutions</p>
+      <p className={`${styles.filterTitle}`}>Institutions</p>
       <SelectFilter
         options={institutionOptions}
         filterKey={FilterKey.institutions}
       />
 
       {/*<p>{JSON.stringify(state)}</p>*/}
-    </>
+    </div>
   );
 };
 

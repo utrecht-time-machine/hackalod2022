@@ -34,7 +34,7 @@ function preload() {
 }
 
 function setup() {
-  myCanvas = createCanvas(800, 800);
+  myCanvas = createCanvas(900, 800);
   myCanvas.parent("dom-container");
 
   screen = createGraphics(width, height, WEBGL);
