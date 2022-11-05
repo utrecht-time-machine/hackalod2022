@@ -58,7 +58,9 @@ const Filters = (props: {}) => {
 
   return (
     <div
-      className={"opacity-30 hover:opacity-90 duration-500 transition-opacity"}
+      className={
+        "filters opacity-30 hover:opacity-90 duration-500 transition-opacity"
+      }
     >
       <p className={`${styles.filterTitle}`}>Jaar</p>
       <div className={"px-2 saturate-0 brightness-[1.4]"}>

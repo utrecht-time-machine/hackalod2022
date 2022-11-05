@@ -16,7 +16,7 @@ export class FilterService {
     }
 
     if (!image.dateBegin && !image.dateEnd) {
-      return true;
+      return false;
     }
 
     if (image.dateBegin && image.dateEnd) {

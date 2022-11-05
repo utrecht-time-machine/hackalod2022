@@ -20,6 +20,10 @@ canvas {
   user-select: none;
 }
 
+.image-preview {
+  z-index: 1000;
+}
+
 @media (orientation: portrait) {
   .layout {
     grid-template-rows: 2fr 1fr !important;
@@ -50,3 +54,8 @@ canvas {
     margin-bottom: 1.2em;
   }
 }
+
+/*#dom-container canvas {*/
+/*  z-index: -1;*/
+/*  transform: scale(1.5) translateY(70px);*/
+/*}*/

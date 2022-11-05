@@ -176,7 +176,7 @@ function setup() {
     onImageFilterUpdated(event.detail);
   });
 
-  myCanvas = createCanvas(900, 800);
+  myCanvas = createCanvas(900, 1000);
   myCanvas.parent("dom-container");
 
   screen = createGraphics(width, height, WEBGL);
@@ -199,6 +199,7 @@ function draw() {
 
   // console.log(clr, lvl, sde);
 
+  // scale(1.1);
   image(screen, 0, 0);
 
   // console.log(lvl, sde, t);
@@ -232,7 +233,7 @@ function render() {
   target.clear(0); //important!!!
   target.background(60, 9, 108);
   target.noStroke();
-  target.translate(65, 350, -250);
+  target.translate(65, 250, -250);
   target.rotateX(rotx);
   target.rotateY(roty);
 

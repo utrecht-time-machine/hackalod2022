@@ -66,7 +66,7 @@ const Layout = (props: {}) => {
       <div className={"col-span-4 p-4"}>
         <div
           className={
-            "scale-75 -top-[3.5rem] absolute -left-[3rem] w-96 p-4 px-8 rounded"
+            "scale-75 z-20 -top-[3.5rem] absolute -left-[3rem] w-96 p-4 px-8 rounded"
           }
         >
           <Filters />
@@ -74,7 +74,7 @@ const Layout = (props: {}) => {
 
         <DomRendererP5 />
       </div>
-      <div className={"col-span-2 bg-[#240046] p-4 text-white"}>
+      <div className={"col-span-2 bg-[#240046] p-4 text-white z-20"}>
         {/*  @ts-ignore */}
         <ImagePreview image={state.selectedImage} />
       </div>
