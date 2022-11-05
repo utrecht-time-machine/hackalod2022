@@ -7,10 +7,14 @@ const ImagePreview = (props: { image: ImageModel }) => {
       <img
         src={"/img/torenafbeeldingen/" + props.image?.id + ".jpg"}
         alt={props.image?.title}
-        className={"max-h-96"}
+        className={"object-contain"}
       />
       <div className={"image-preview-text"}>
-        <p className={"text-lg font-bold mt-4"}>{props.image?.title}</p>
+        <p className={"text-lg font-bold mt-4"}>
+          {props.image?.title.length > 90
+            ? props.image?.title.substring(0, 90) + "..."
+            : props.image?.title}
+        </p>
         <div className={"font-mono text-sm"}>
           <div className={"grid grid-cols-2 mt-2"}>
             <strong className={"font-bold mr-4"}>Jaar </strong>{" "}
