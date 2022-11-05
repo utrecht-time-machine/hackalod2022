@@ -34,7 +34,7 @@ const Layout = (props: {}) => {
     const images: ImageModel[] = DataService.getImages();
     const nineFilteredImages =
       FilterService.getNineFilteredImages(filteredImages);
-    console.log("FILTER STATE", state, nineFilteredImages);
+    // console.log("FILTER STATE", state, nineFilteredImages);
 
     // @ts-ignore
     window.dispatchEvent(
@@ -62,7 +62,7 @@ const Layout = (props: {}) => {
   }, []);
 
   return (
-    <div className={"grid grid-cols-6 h-screen"}>
+    <div className={"layout grid grid-cols-6 h-screen"}>
       <div className={"col-span-4 p-4"}>
         <div
           className={

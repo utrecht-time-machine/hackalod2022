@@ -60,7 +60,7 @@ const Filters = (props: {}) => {
     <div
       className={"opacity-30 hover:opacity-90 duration-500 transition-opacity"}
     >
-      <p className={`${styles.filterTitle}`}>Year range</p>
+      <p className={`${styles.filterTitle}`}>Jaar</p>
       <div className={"px-2 saturate-0 brightness-[1.4]"}>
         <Slider
           value={yearRange}
@@ -76,16 +76,16 @@ const Filters = (props: {}) => {
       <p className={styles.filterTitle}>Object type</p>
       <SelectFilter options={materialOptions} filterKey={FilterKey.materials} />
 
-      <p className={styles.filterTitle}>Makers</p>
+      <p className={styles.filterTitle}>Maker</p>
       <SelectFilter options={makerOptions} filterKey={FilterKey.makers} />
 
-      <p className={`${styles.filterTitle}`}>Technique</p>
+      <p className={`${styles.filterTitle}`}>Techniek</p>
       <SelectFilter
         options={techniqueOptions}
         filterKey={FilterKey.techniques}
       />
 
-      <p className={`${styles.filterTitle}`}>Institutions</p>
+      <p className={`${styles.filterTitle}`}>Instelling</p>
       <SelectFilter
         options={institutionOptions}
         filterKey={FilterKey.institutions}

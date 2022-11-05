@@ -218,7 +218,9 @@ function mousePressed() {
 
   if (lvl in tIds && sde in tIds[lvl]) {
     const imgId = tIds[lvl][sde];
-    window.dispatchEvent(new CustomEvent("onFaceClicked", { detail: imgId }));
+    if (imgId) {
+      window.dispatchEvent(new CustomEvent("onFaceClicked", { detail: imgId }));
+    }
   } else {
     console.warn("NO ID");
   }
@@ -234,7 +236,7 @@ function render() {
   target.rotateX(rotx);
   target.rotateY(roty);
 
-  if (target == screen) target.tint(255, 255); // opacity
+  if (target == screen) target.tint(255, 200); // opacity
   else target.tint(255);
 
   domtoren_level(0, 0, 0, 0, 90, 130, 90);
@@ -264,10 +266,26 @@ function drawTriangle(target, level, side, a, b, c, ta, tb, tc) {
   target.push();
   target.beginShape(TRIANGLES);
   if (target == screen) {
-    if (t && level in t && side in t[level] && t[level][side]) {
-      target.texture(t[level][side]);
+    if (t && level in t) {
+      if (!(side in t[level]) || !t[level][side]) {
+        // No texture available, use texture of another side of this level.
+        let alternativeTexture = undefined;
+        for (let anotherSide = 0; anotherSide < SIDES; anotherSide++) {
+          if (t[level][anotherSide]) {
+            alternativeTexture = t[level][anotherSide];
+            break;
+          }
+        }
+
+        if (alternativeTexture) {
+          target.texture(alternativeTexture);
+        } else {
+          target.fill(200, 200, 200);
+        }
+      } else {
+        target.texture(t[level][side]);
+      }
     } else {
-      // TODO: Use default texture? At level 5? (as a hack)
       target.fill(200, 200, 200);
     }
     target.vertex(a[0], a[1], a[2], ta[0], ta[1]);
@@ -289,9 +307,25 @@ function drawQuad(target, level, side, a, b, c, d, ta, tb, tc, td) {
   target.push();
   target.beginShape(QUADS);
   if (target == screen) {
-    if (t && level in t && side in t[level] && t[level][side]) {
-      // console.log("OI", t, level, side);
-      target.texture(t[level][side]);
+    if (t && level in t) {
+      if (!(side in t[level]) || !t[level][side]) {
+        // No texture available, use texture of another side of this level.
+        let alternativeTexture = undefined;
+        for (let anotherSide = 0; anotherSide < SIDES; anotherSide++) {
+          if (t[level][anotherSide]) {
+            alternativeTexture = t[level][anotherSide];
+            break;
+          }
+        }
+
+        if (alternativeTexture) {
+          target.texture(alternativeTexture);
+        } else {
+          target.fill(200, 200, 200);
+        }
+      } else {
+        target.texture(t[level][side]);
+      }
     } else {
       target.fill(200, 200, 200);
     }
