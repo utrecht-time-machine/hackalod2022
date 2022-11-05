@@ -2,38 +2,157 @@
 /* eslint-disable */
 
 const SIDES = 9;
-const levelCounts = [35, 47, 56, 46];
+let levelCounts = [35, 47, 56, 46];
 let bg, logo;
 let rotx = 0;
 let roty = Math.PI / 4;
-let t = [];
+let t = []; //2D array with images
+let tIds = [];
 const sides = 8;
 const levels = 4;
 let screen, hitmap, target, flathitmap;
 let tex = true;
+let allImages;
+let imageDataById = {};
+let croppedImageDataById = {};
 
 function randomImage(level) {
   //FIXME: only call this during load otherwise you get too many open images!!!
-  return loadImage(
-    "data/level" +
-      level +
-      "/" +
-      parseInt(Math.random() * levelCounts[level] + 1) +
-      ".png"
-  );
+  if (!allImages) {
+    const imgId = parseInt(Math.random() * levelCounts[level] + 1);
+    const img = loadImage("data/level" + level + "/" + imgId + ".png");
+    return [imgId, img];
+  } else {
+    console.log(
+      "map",
+      allImages.map((img) => img.url)
+    );
+  }
 }
 
 function preload() {
-  console.log("HELLO");
   for (let level = 0; level < 4; level++) {
     t[level] = [];
     for (let side = 0; side < SIDES; side++) {
-      t[level][side] = randomImage(level);
+      const [imgId, img] = randomImage(level);
+      t[level][side] = img;
+      if (!(level in tIds)) {
+        tIds[level] = {};
+      }
+      tIds[level][side] = imgId;
     }
   }
 }
 
+function onImageFilterUpdated(detail) {
+  // console.log("RickyboyII On images filtered", detail);
+  // allImages = detail;
+
+  // levelCounts = [0, 0, 0, 0];
+
+  for (let side = 0; side < 9; side++) {
+    //always 9 images
+    let img = detail[side];
+    if (!img) {
+      console.warn("No img passed...");
+      return;
+    }
+    if (!imageDataById[img.id]) {
+      console.log("loading ", img.id, "into imageDataById[", img.id, "]");
+      imageDataById[img.id] = loadImage(
+        "/img/torenafbeeldingen/" + img.id + ".jpg",
+        () => {
+          setTimeout(() => {
+            if (!(img.id in croppedImageDataById)) {
+              croppedImageDataById[img.id] = [null, null, null, null];
+            }
+            if (img.layer0Coordinates) {
+              croppedImageDataById[img.id][0] = imageDataById[img.id].get(
+                img.layer0Coordinates.x,
+                img.layer0Coordinates.y,
+                img.layer0Coordinates.width,
+                img.layer0Coordinates.height
+              );
+            }
+            if (img.layer1Coordinates) {
+              croppedImageDataById[img.id][1] = imageDataById[img.id].get(
+                img.layer1Coordinates.x,
+                img.layer1Coordinates.y,
+                img.layer1Coordinates.width,
+                img.layer1Coordinates.height
+              );
+            }
+            if (img.layer2Coordinates) {
+              croppedImageDataById[img.id][2] = imageDataById[img.id].get(
+                img.layer2Coordinates.x,
+                img.layer2Coordinates.y,
+                img.layer2Coordinates.width,
+                img.layer2Coordinates.height
+              );
+            }
+            if (img.layer3Coordinates) {
+              croppedImageDataById[img.id][3] = imageDataById[img.id].get(
+                img.layer3Coordinates.x,
+                img.layer3Coordinates.y,
+                img.layer3Coordinates.width,
+                img.layer3Coordinates.height
+              );
+            }
+          });
+          // imageDataById[img.id].get(
+          //   img.x,
+          //   img.y,
+          //   img.width,
+          //   img.height
+          // );
+        }
+      );
+    } else {
+      // console.log("from cache ", img.id);
+    }
+
+    // console.log(img.)
+    // layer0Coordinates: { x: number; y: number; width: number; height: number };
+    for (let level = 0; level < 4; level++) {
+      const levelCoords = img["layer" + level + "Coordinates"];
+
+      setTimeout(() => {
+        if (croppedImageDataById[img.id]) {
+          t[level][side] = undefined;
+          if (!(level in tIds)) {
+            tIds[level] = {};
+          }
+          tIds[level][side] = undefined;
+
+          if (
+            level in croppedImageDataById[img.id] &&
+            croppedImageDataById[img.id][level]
+          ) {
+            t[level][side] = croppedImageDataById[img.id][level];
+            tIds[level][side] = img.id;
+          }
+        }
+      }, 2);
+
+      // if (levelCoords) {
+      //   levelCounts[level]++; //number of images per level
+      // }
+      // for (let level = 0; level < 4; level++) {
+      //   t[level] = [];
+      //   for (let side = 0; side < SIDES; side++) {
+      //     t[level][side] = randomImage(level);
+      //   }
+      // }
+    }
+  }
+  // console.log(levelCounts);
+}
+
 function setup() {
+  window.addEventListener("onImageFilterUpdated", (event) => {
+    onImageFilterUpdated(event.detail);
+  });
+
   myCanvas = createCanvas(900, 800);
   myCanvas.parent("dom-container");
 
@@ -55,28 +174,44 @@ function draw() {
   render();
   flathitmap.image(hitmap, 0, 0);
 
-  const clr = flathitmap.get(mouseX, mouseY);
-  const lvl = Math.floor((red(clr) / 255) * levels);
-  const sde = Math.floor((green(clr) / 255) * sides);
-
-  console.log(clr, lvl, sde);
+  // console.log(clr, lvl, sde);
 
   image(screen, 0, 0);
 
+  // console.log(lvl, sde, t);
   //show tex of rollover
-  image(t[lvl][sde], 0, 0, 300, 300);
+  // image(t[lvl][sde], 0, 0, 300, 300);
+}
+
+function mousePressed() {
+  // console.log(lvl, sde, t);
+  //show tex of rollover
+  // image(t[lvl][sde], 0, 0, 300, 300);
+
+  const clr = flathitmap.get(mouseX, mouseY);
+  const lvl = Math.floor((red(clr) / 255) * levels);
+  const sde = Math.floor((green(clr) / 255) * sides);
+  console.log(clr, lvl, sde);
+
+  if (lvl in tIds && sde in tIds[lvl]) {
+    const imgId = tIds[lvl][sde];
+    window.dispatchEvent(new CustomEvent("onFaceClicked", { detail: imgId }));
+  } else {
+    console.warn("NO ID");
+  }
+  // image(t[lvl][sde], 0, 0, 300, 300);
 }
 
 function render() {
   target.push();
-  target.clear(); //important!!!
-  target.background(0);
+  target.clear(0); //important!!!
+  target.background(60, 9, 108);
   target.noStroke();
   target.translate(65, 350, -250);
   target.rotateX(rotx);
   target.rotateY(roty);
 
-  if (target == screen) target.tint(255, 175);
+  if (target == screen) target.tint(255, 255); // opacity
   else target.tint(255);
 
   domtoren_level(0, 0, 0, 0, 90, 130, 90);
@@ -106,7 +241,11 @@ function drawTriangle(target, level, side, a, b, c, ta, tb, tc) {
   target.push();
   target.beginShape(TRIANGLES);
   if (target == screen) {
-    target.texture(t[level][side]);
+    if (t && level in t && side in t[level] && t[level][side]) {
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(a[0], a[1], a[2], ta[0], ta[1]);
     target.vertex(b[0], b[1], b[2], tb[0], tb[1]);
     target.vertex(c[0], c[1], c[2], tc[0], tc[1]);
@@ -126,7 +265,12 @@ function drawQuad(target, level, side, a, b, c, d, ta, tb, tc, td) {
   target.push();
   target.beginShape(QUADS);
   if (target == screen) {
-    target.texture(t[level][side]);
+    if (t && level in t && side in t[level] && t[level][side]) {
+      // console.log("OI", t, level, side);
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(a[0], a[1], a[2], ta[0], ta[1]);
     target.vertex(b[0], b[1], b[2], tb[0], tb[1]);
     target.vertex(c[0], c[1], c[2], tc[0], tc[1]);
@@ -250,29 +394,48 @@ function drawTexturedPyramid(level) {
   let side = 0;
 
   if (target == screen) {
+    const textureIsAvailable =
+      t && level in t && side in t[level] && t[level][side];
+
     // +Z "front" face
-    target.texture(t[level][side]);
+    if (textureIsAvailable) {
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(1, 1, 1, 1, 1);
     target.vertex(-1, 1, 1, 0, 1);
 
     // -Z "back" face
-    target.texture(t[level][side]);
+    if (textureIsAvailable) {
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(-1, 1, -1, 1, 1);
     target.vertex(1, 1, -1, 0, 1);
 
     //// +X "right" face
-    target.texture(t[level][side]);
+    if (textureIsAvailable) {
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(1, 1, -1, 1, 1);
     target.vertex(1, 1, 1, 0, 1);
 
     //// -X "left" face
-    target.texture(t[level][side]);
+    if (textureIsAvailable) {
+      target.texture(t[level][side]);
+    } else {
+      target.fill(0, 0, 0);
+    }
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(0, -1, 0, 0.5, 0);
     target.vertex(-1, 1, 1, 1, 1);

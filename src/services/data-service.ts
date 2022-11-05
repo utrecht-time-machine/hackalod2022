@@ -24,4 +24,20 @@ export class DataService {
       return { label: id, value: id };
     });
   };
+
+  static getImageById = (imageId: string): ImageModel | null => {
+    if (!imageId) {
+      return null;
+    }
+    const filteredImages: ImageModel[] = DataService.getImages().filter(
+      (img) => img.id === imageId
+    );
+
+    if (!filteredImages || filteredImages.length <= 0) {
+      console.warn("Could not find image with ID", imageId);
+      return null;
+    }
+
+    return filteredImages[0];
+  };
 }

@@ -3,6 +3,7 @@ import { DomTower } from "../components/dom-renderer/dom-renderer";
 import { testSet } from "../data/testSet";
 import { StateModel } from "../models/state.model";
 import { GlobalState } from "little-state-machine";
+import { DataService } from "./data-service";
 
 export class FilterService {
   static isImageInYearRange = (
@@ -40,6 +41,9 @@ export class FilterService {
 
     // @ts-ignore
     const imageData: string[] = image[key];
+    if (!imageData) {
+      return false;
+    }
     return data.flat().some((e) => imageData.includes(e));
   };
 
@@ -88,4 +92,43 @@ export class FilterService {
 
     return filteredImages;
   };
+
+  //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+  static shuffle(array: any[]) {
+    let currentIndex = array.length,
+      randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+
+    return array;
+  }
+
+  static getNineFilteredImages(filteredImages: ImageModel[]): ImageModel[] {
+    if (!filteredImages || filteredImages.length === 0) {
+      console.warn("No filtered images...");
+      return [];
+    }
+
+    if (filteredImages.length < 9) {
+      const missingImages = 9 - filteredImages.length;
+
+      return filteredImages.concat(
+        Array(missingImages).fill(filteredImages[0])
+      );
+    }
+
+    const shuffledFilteredImages = FilterService.shuffle(filteredImages);
+    return shuffledFilteredImages;
+  }
 }

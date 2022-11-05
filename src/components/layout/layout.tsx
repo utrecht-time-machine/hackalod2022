@@ -5,14 +5,42 @@ import { useStateMachine } from "little-state-machine";
 import { DataService } from "../../services/data-service";
 import ImagePreview from "../data-viewer/image-preview";
 import DomRendererP5 from "../dom-renderer/dom-renderer-p5";
+import { updateSelectedImage } from "../../actions/actions";
+import { ImageModel } from "../../models/image.model";
 
 const Layout = (props: {}) => {
-  const { state, actions } = useStateMachine({});
+  // @ts-ignore
+  const { state, actions } = useStateMachine({ updateSelectedImage });
 
   useEffect(() => {
     // console.log(getData());
-    console.log(state);
-    FilterService.getFilteredImages(DataService.getImages(), state);
+
+    const filteredImages = FilterService.getFilteredImages(
+      DataService.getImages(),
+      state
+    );
+
+    const images: ImageModel[] = DataService.getImages();
+    const nineImages = Array(9).fill(images);
+    const nineFilteredImages =
+      FilterService.getNineFilteredImages(filteredImages);
+    console.log("FILTER STATE", state, nineFilteredImages);
+
+    // @ts-ignore
+    window.dispatchEvent(
+      new CustomEvent("onImageFilterUpdated", {
+        detail: nineFilteredImages,
+      })
+    );
+
+    window.addEventListener("onFaceClicked", (event: any) => {
+      const imgId = event.detail;
+      console.log("CLICKED", imgId);
+      const selectedImage = DataService.getImageById(imgId);
+      if (selectedImage) {
+        actions.updateSelectedImage(selectedImage);
+      }
+    });
   }, [state]);
 
   useEffect(() => {
@@ -22,25 +50,18 @@ const Layout = (props: {}) => {
 
   return (
     <div className={"grid grid-cols-6 h-screen"}>
-      <div className={"col-span-4 bg-black p-4"}>
+      <div className={"col-span-4 p-4"}>
         <div
           className={
-            "scale-75 -bottom-[2rem] absolute -left-8 w-96 p-4 px-8 rounded"
+            "scale-75 -top-[3.5rem] absolute -left-[3rem] w-96 p-4 px-8 rounded"
           }
         >
           <Filters />
         </div>
 
-        {/*<DataViewer*/}
-        {/*  images={FilterService.getFilteredImages(*/}
-        {/*    DataService.getImages(),*/}
-        {/*    state*/}
-        {/*  )}*/}
-        {/*/>*/}
-
         <DomRendererP5 />
       </div>
-      <div className={"col-span-2 bg-slate-600 p-4 text-white"}>
+      <div className={"col-span-2 bg-[#240046] p-4 text-white"}>
         {/*  @ts-ignore */}
         <ImagePreview image={state.selectedImage} />
       </div>
