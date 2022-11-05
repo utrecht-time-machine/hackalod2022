@@ -8,10 +8,6 @@ import {
   StateMachineProvider,
   useStateMachine,
 } from "little-state-machine";
-import { StateModel } from "./models/state.model";
-import { testSet } from "./data/testSet";
-import { FilterService } from "./services/filter-service";
-import { updateYearRange } from "./actions/actions";
 
 const router = createBrowserRouter([
   {
@@ -26,9 +22,11 @@ const router = createBrowserRouter([
 
 createStore({
   materials: [],
+  makers: [],
   institutions: [],
   techniques: [],
   yearRange: [],
+  selectedImage: null,
 });
 
 function App() {

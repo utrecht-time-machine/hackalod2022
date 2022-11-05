@@ -8,6 +8,7 @@ import {
   updateInstitutions,
   updateMaterials,
   updateTechniques,
+  updateMakers,
 } from "../../../actions/actions";
 import { OptionModel } from "../../../models/option.model";
 import { FilterKey } from "../../../models/filter-key";
@@ -31,6 +32,9 @@ const SelectFilter = (props: {
     } else if (props.filterKey === FilterKey.techniques) {
       // @ts-ignore
       actions.updateTechniques(options);
+    } else if (props.filterKey === FilterKey.makers) {
+      // @ts-ignore
+      actions.updateMakers(options);
     }
   };
 
@@ -38,6 +42,7 @@ const SelectFilter = (props: {
     updateInstitutions,
     updateMaterials,
     updateTechniques,
+    updateMakers,
   });
 
   useEffect(() => {}, [state]);

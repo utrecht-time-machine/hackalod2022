@@ -19,6 +19,7 @@ const Filters = (props: {}) => {
   };
 
   const [materialOptions, setMaterialOptions] = useState<OptionModel[]>([]);
+  const [makerOptions, setMakerOptions] = useState<OptionModel[]>([]);
   const [institutionOptions, setInstitutionOptions] = useState<OptionModel[]>(
     []
   );
@@ -33,12 +34,18 @@ const Filters = (props: {}) => {
     setInstitutionOptions(
       DataService.getImageOptions(DataService.getImages(), "institutions")
     );
+    setMakerOptions(
+      DataService.getImageOptions(DataService.getImages(), "makers")
+    );
   }, []);
 
   return (
     <>
       <p className={styles.filterTitle}>Material</p>
       <SelectFilter options={materialOptions} filterKey={FilterKey.materials} />
+
+      <p className={styles.filterTitle}>Makers</p>
+      <SelectFilter options={makerOptions} filterKey={FilterKey.makers} />
 
       <p className={`${styles.filterTitle} mt-6`}>Year range</p>
       <Slider
@@ -62,6 +69,8 @@ const Filters = (props: {}) => {
         options={institutionOptions}
         filterKey={FilterKey.institutions}
       />
+
+      {/*<p>{JSON.stringify(state)}</p>*/}
     </>
   );
 };

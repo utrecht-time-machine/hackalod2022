@@ -66,6 +66,12 @@ export class FilterService {
         "materials"
       );
 
+      const imageMatchesMakersFilter: boolean = FilterService.imagesHasKeys(
+        image,
+        Object.values(stateAsModel.makers).map((e) => e.value),
+        "makers"
+      );
+
       const imageMatchesTechniquesFilter: boolean = FilterService.imagesHasKeys(
         image,
         Object.values(stateAsModel.techniques).map((e) => e.value),
@@ -75,7 +81,8 @@ export class FilterService {
         imageIsInYearRange &&
         imageMatchesInstitutionsFilter &&
         imageMatchesMaterialsFilter &&
-        imageMatchesTechniquesFilter
+        imageMatchesTechniquesFilter &&
+        imageMatchesMakersFilter
       );
     });
 

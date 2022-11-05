@@ -2,10 +2,10 @@ export interface ImageModel {
   id: string;
   url: string;
   title: string;
+  makers: string[];
   materials: string[];
   techniques: string[];
   institutions: string[];
-  makers: string[];
   dateBegin: number;
   dateEnd?: number;
   layer0Coordinates: [number[], number[], number[], number[]];
