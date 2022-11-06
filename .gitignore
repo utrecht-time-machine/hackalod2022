@@ -26,3 +26,4 @@ yarn-error.log*
 public/data
 *.jpg
 *.png
+*.cache
