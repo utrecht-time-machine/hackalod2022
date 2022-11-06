@@ -27,3 +27,4 @@ public/data
 *.jpg
 *.png
 *.cache
+firebase-debug.log
